@@ -38,18 +38,24 @@
                                 <label>BA Groups</label>
                                 <Select 
                                     v-model="selectedBaGroup"
-                                    :options="props.ba_groups" 
-                                    optionLabel="ba_group" 
-                                    optionValue="ba_group"
+                                    :options="ba_groups_options" 
+                                    optionLabel="label" 
+                                    optionValue="value"
                                     class="w-full"
                                 />
                             </div>
                          
                             <div style="" class="flex items-end justify-center">
-                                <Button icon="pi pi-search" aria-label="Search" label="View" class="w-32" />
+                                <!-- <Button icon="pi pi-search" aria-label="Search" label="View" class="w-32" /> -->
                             </div>
                             <div style="" class="flex items-end justify-center">
-                                <Button icon="pi pi-cloud-download" aria-label="Download" label="Download" class="w-32" />
+                                <Button 
+                                    icon="pi pi-cloud-download" 
+                                    aria-label="Download" 
+                                    label="Download" 
+                                    class="w-32" 
+                                    @click="download"
+                                />
                             </div>
                             
                         </div>
@@ -91,6 +97,7 @@
                     </Column>
                     </DataTable> 
                 </div>
+                <Toast />
             </template>
        </AppLayout>
     </div> 
@@ -98,16 +105,22 @@
 
 <script setup>
 import { format } from 'date-fns';
-import { ref,onMounted,computed } from 'vue';
+import { ref,onMounted,computed,watch } from 'vue';
 import AppLayout from '@/Layouts/AppLayoutNoSide.vue';
 import NavBar from '@/Pages/Navigation/NavBar.vue';
 import { router } from '@inertiajs/vue3';
+
+import { getFN } from '@/api/transmit';
+
+import { useToast } from "primevue/usetoast";
+// import { postFN } from '@/api/transmit.js';
 
 const selectedRow = ref();
 
 const selectedDate = ref(null);
 const selectedBaGroup = ref(null);
 const selectedPOStatus = ref(null);
+const toast = useToast();
 
 const props = defineProps([
     'po_dates',
@@ -164,6 +177,50 @@ const listboxItems = ref([{value : 0, name : 'All'}]);
 
 const po_options = ref([{ label : 'All', value : 'All' }]);
 
+const ba_groups_options = computed(() => {
+    return [
+        { label : 'All', value : 'All' },...props.ba_groups.map(item => ({
+            label : item.ba_group,
+            value : item.ba_group 
+        }))
+    ];
+});
+
+const download = () => {
+    const url = `/reports/pending-po/download`;
+    
+    if(selectedDate.value != null){
+        getFN(url,{ 
+            created_at : selectedDate.value,
+            po_status : selectedPOStatus.value,
+            ba_group : selectedBaGroup.value,
+        });
+    }else{
+        toast.add({
+            severity: 'error', 
+            summary: 'Lacking Parameters', 
+            detail: 'Please select a date.', 
+            life: 3000
+        });
+    }
+    
+};
+
+//ref([{ label : 'All', value : 'All' }]);
+
+const reset_ba_groups = () => {
+    ba_groups_options.value = [];
+};
+
+// watch(selectedPOStatus, (newVal,oldVal) => {
+//     reset_ba_groups();
+//     ba_groups_options.value.push(...props.ba_groups.map(item => ({
+//             label : item.ba_group,
+//             value : item.ba_group 
+//         }))
+//     );
+// });
+
 
 onMounted(() => {
 
@@ -185,6 +242,8 @@ const dateChange = async (data) => {
     // console.log(selectedDate.value,data);
     if(selectedDate.value != null)
     {
+        selectedPOStatus.value = null;
+
         router.get(route('pending-po.index'), {
             created_date: selectedDate.value
         }, {
@@ -203,7 +262,7 @@ const poStatusChange = async (data) => {
             created_date: selectedDate.value || null,
             po_status: selectedPOStatus.value ,
         }, {
-            only: ['ba_groups'],
+            only: ['ba_groups','data'],
             preserveScroll: true,
             preserveState: true
         })

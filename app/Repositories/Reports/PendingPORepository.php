@@ -50,6 +50,36 @@ class PendingPORepository
         return null;
        
     }
+
+    public function getBase($date)
+    {
+        $result = DB::table('data_src')->select();
+
+        if(!is_null($date)){
+            return $result->where('created_date',$date)->orderBy('created_date','desc');
+        }
+        
+        return null;
+       
+    }
+
+    public function getStatus($base,$po_status){
+        if(!is_null($po_status)){
+            return [$po_status];
+        }
+
+        $result = $base->select('po_status')
+            ->distinct()
+            ->get();
+
+        $status_arr = [];
+
+        foreach($result as $status){
+            array_push($status_arr,$status->po_status);
+        }
+
+        return $status_arr;
+    }
 }
 
 

@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DataSource\ExcelUploaderController;
+use App\Http\Controllers\Reports\APDailyController;
 use App\Http\Controllers\Reports\PendingPOController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Foundation\Application;
@@ -38,6 +39,7 @@ Route::prefix('data-source')->group(function(){
 
 Route::prefix('reports')->group(function(){
     Route::get('pending-po', [PendingPOController::class, 'index'])->name('pending-po.index');
+    Route::get('ap-daily', [APDailyController::class, 'index'])->name('ap-daily.index');
 });
 
 // Route::get('/hash', function(){

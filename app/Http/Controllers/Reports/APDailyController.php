@@ -1,0 +1,29 @@
+<?php
+
+namespace App\Http\Controllers\Reports;
+
+use App\Entities\Reports\APDaily;
+use App\Http\Controllers\Controller;
+use App\Service\Reports\APDailyService;
+use Illuminate\Http\Request;
+use Inertia\Inertia;
+
+class APDailyController extends Controller
+{
+    public function __construct(protected APDailyService $service)
+    {
+        
+    }
+
+    public function index()
+    {
+        $ap_report = $this->service->buildReport();
+
+        $monthly_ap_report = $this->service->buildMonthlyAP();
+
+        return Inertia::render('MyApp/Reports/APDaily/MainPage',[
+            'count_by_vendor' => $ap_report->getCountByVendorData(),
+            'monthly_ap_report' => $monthly_ap_report
+        ]);
+    }
+}

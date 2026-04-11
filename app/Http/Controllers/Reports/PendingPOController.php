@@ -30,4 +30,15 @@ class PendingPOController extends Controller
             'data' => $data
         ]);
     }
+
+    public function download(Request $request)
+    {
+        $created_at = $request->input('created_at');
+        $po_status = $request->input('po_status');
+        $ba_group = $request->input('ba_group');
+
+        $data = $this->pendingPOService->processData( $created_at, $po_status, $ba_group);
+
+        return view('reports.po-by-status', [ 'data' => $data]);
+    }
 }

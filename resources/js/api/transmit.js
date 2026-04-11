@@ -11,9 +11,9 @@ export const postFN = async (url, data) => {
     }
 };
 
-export const getFN = async (url) => {
+export const getFN = async (url,params) => {
     try {
-        const response = await api.get(url);           
+        const response = await api.get(url,{ params : params});           
         return response;
     } catch (error) {
         console.error('Error occurred while fetching data:', error);
