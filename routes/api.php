@@ -6,6 +6,7 @@
 // use App\Http\Controllers\TireManagement\InstallationController;
 
 use App\Http\Controllers\DataSource\ExcelUploaderController;
+use App\Http\Controllers\Reports\APDailyController;
 use App\Http\Controllers\Reports\PendingPOController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -19,6 +20,9 @@ Route::middleware('auth:sanctum')->prefix('data-source')->group(function(){
 
 Route::prefix('reports')->group(function(){
     Route::get('pending-po/download', [PendingPOController::class, 'download'])->name('pending-po.download');
+
+    Route::get('ap-daily/download', [APDailyController::class, 'download'])->name('ap-daily.download');
+    
 });
 
 // Route::get('/user', function (Request $request) {

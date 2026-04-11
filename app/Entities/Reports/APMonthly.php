@@ -52,5 +52,12 @@ class APMonthly
         return $this->repository->getCount($this->first_day,$this->last_day)?->ref_no_count;
     }
 
+    public function getCountByVendor()
+    {
+        return $this->repository->getCountByVendor($this->first_day,$this->last_day);
+    }
+
+
+
 
 }

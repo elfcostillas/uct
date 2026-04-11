@@ -26,4 +26,20 @@ class APDailyController extends Controller
             'monthly_ap_report' => $monthly_ap_report
         ]);
     }
+
+    public function download()
+    {
+        $ap_report = $this->service->buildReport();
+        $monthly_ap_report = $this->service->buildMonthlyAP();
+        $monthly_ap_report_vendor = $this->service->buildMonthlyAPByVendor();
+
+        
+        return view('reports.ap-daily', [ 
+            'ap_report' => $ap_report,
+            'monthly_ap_report' => $monthly_ap_report,
+            'monthly_ap_report_vendor' => $monthly_ap_report_vendor,
+        ]);
+
+
+    }
 }
