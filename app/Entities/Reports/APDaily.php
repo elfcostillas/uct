@@ -23,8 +23,15 @@ class APDaily
 
     public function getCountByVendorData()
     {
-        return $this->countByVendorData;
+        // return (clone $this->countByVendorData)->get();
+        return (clone $this->countByVendorData)->orderBy('vendor','ASC')->get();
     }
+
+    public function getCountByVendorDataSorted()
+    {
+        return (clone $this->countByVendorData)->orderBy('ref_no_count','DESC')->get();
+    }
+
 
     public function setMonths($data)
     {

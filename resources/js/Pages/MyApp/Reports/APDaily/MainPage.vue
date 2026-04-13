@@ -14,6 +14,13 @@
 
             <template #main>
                 <div style="width:50%">
+                    <Button 
+                        icon="pi pi-cloud-download" 
+                        aria-label="Download" 
+                        label="Download" 
+                        class="w-32 my-2" 
+                        @click="download"
+                    />
                     <DataTable
                         :value="props.count_by_vendor"
                         :cols="cols"
@@ -41,7 +48,20 @@
                             :key="col.field"
                             :field="col.field"
                             :header="col.header"
-                        />
+                            headerClass="text-align:center"
+                        >
+                            <template #body="{ data }">
+                             
+                                <div style="width:100%;text-align:center;font-weight:bold;" v-if="col.type === 'total'">
+                                    {{ data[col.field] }}
+                                </div>
+                                <div style="width:100%;text-align:center;" v-else>
+                                    {{ data[col.field] }}
+                                
+                                </div>
+
+                            </template>
+                        </Column>
                     </DataTable>
                 </div>
 
@@ -57,6 +77,9 @@ import AppLayout from '@/Layouts/AppLayoutNoSide.vue';
 import NavBar from '@/Pages/Navigation/NavBar.vue';
 import { router } from '@inertiajs/vue3';
 
+const download = () => {
+    window.open('/api/reports/ap-daily/download');
+};
 
 const sumOfTotals = computed(()=> {
     return props.count_by_vendor.reduce( (sum,item) => {
@@ -94,7 +117,7 @@ const monthly_cols = computed(() => {
 
     return [
         ...dynamicCols,
-        { field: 'Total', header: 'Total' }
+        { field: 'Total', header: 'Total', type : 'total' }
     ]
 })
 

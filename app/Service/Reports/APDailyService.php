@@ -22,8 +22,8 @@ class APDailyService
         $report =  new APDaily();
 
         $count_by_vendor = $this->repo->countByVendor();
-
-        $report->setCountByVendorData($count_by_vendor->get());
+        
+        $report->setCountByVendorData($count_by_vendor);
 
         return $report;
     }

@@ -64,7 +64,8 @@ class PendingPORepository
     }
 
     public function getStatus($base,$po_status){
-        if(!is_null($po_status)){
+
+        if(!is_null($po_status) && $po_status != 'All'){
             return [$po_status];
         }
 

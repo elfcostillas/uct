@@ -35,14 +35,14 @@
                                 />
                             </div>
                             <div style="">
-                                <label>BA Groups</label>
+                                <!-- <label>BA Groups</label>
                                 <Select 
                                     v-model="selectedBaGroup"
                                     :options="ba_groups_options" 
                                     optionLabel="label" 
                                     optionValue="value"
                                     class="w-full"
-                                />
+                                /> -->
                             </div>
                          
                             <div style="" class="flex items-end justify-center">
@@ -187,22 +187,37 @@ const ba_groups_options = computed(() => {
 });
 
 const download = () => {
-    const url = `/reports/pending-po/download`;
-    
+    const url = `/api/reports/pending-po/download?created_at=${encodeURIComponent(selectedDate.value)}&po_status=${encodeURIComponent(selectedPOStatus.value)}&ba_group=${encodeURIComponent(selectedBaGroup.value)}`;
+
     if(selectedDate.value != null){
-        getFN(url,{ 
-            created_at : selectedDate.value,
-            po_status : selectedPOStatus.value,
-            ba_group : selectedBaGroup.value,
-        });
-    }else{
+        window.open(url);
+    } else {
         toast.add({
             severity: 'error', 
             summary: 'Lacking Parameters', 
-            detail: 'Please select a date.', 
+            detail: 'Please select a date and PO Status.', 
             life: 3000
         });
     }
+    
+
+
+    
+    
+    // if(selectedDate.value != null){
+    //     getFN(url,{ 
+    //         created_at : selectedDate.value,
+    //         po_status : selectedPOStatus.value,
+    //         ba_group : selectedBaGroup.value,
+    //     });
+    // }else{
+    //     toast.add({
+    //         severity: 'error', 
+    //         summary: 'Lacking Parameters', 
+    //         detail: 'Please select a date.', 
+    //         life: 3000
+    //     });
+    // }
     
 };
 

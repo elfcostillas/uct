@@ -20,7 +20,13 @@ class POWithStatus
     public function __construct($po_status, $base)
     {
         $this->po_status = $po_status;
-        $this->base = $base->where('po_status',$po_status);
+       
+        if($po_status != 'ALL'){
+            $this->base = $base->where('po_status',$po_status);
+        }else{
+            $this->base = $base;
+        }
+      
     }
 
     public function getPOStatus(){

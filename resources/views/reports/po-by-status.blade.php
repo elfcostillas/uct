@@ -4,6 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    <style>
+        * {
+            font-size: 10pt;
+        }
+    </style>
 </head>
 <body>
    
@@ -16,14 +21,14 @@
             
             @foreach($po_status->getBAGroup() as $key =>$value)
                 <tr>
-                    <td style="width:32px"></td>
-                    <td> BA Group > {{ ($value->ba_group =='' ? 'Blanks' : $value->ba_group ) }} : {{ $po_status->getPOByStatusAndBAGroupCount($value->ba_group) }} </td>
+                    <td style="width:38px"></td>
+                    <td>by: BA Group > {{ ($value->ba_group =='' ? 'Blanks' : $value->ba_group ) }} : {{ $po_status->getPOByStatusAndBAGroupCount($value->ba_group) }} </td>
                 </tr>
                 @foreach($po_status->getBaGroupsBuyerAdmin($value->ba_group) as $admins)
                     <tr>
                         <td></td>
                         <td></td>
-                        <td> Buyer Admin > {{ ($admins->buyer_admin=='') ? 'Blanks': $admins->buyer_admin }} : {{ $po_status->getBuyerAdminCount($admins->buyer_admin)->count() }}</td>
+                        <td>by:  Buyer Admin > {{ ($admins->buyer_admin=='') ? 'Blanks': $admins->buyer_admin }} : {{ $po_status->getBuyerAdminCount($admins->buyer_admin)->count() }}</td>
                         
                     </tr>
                 @endforeach
