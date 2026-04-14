@@ -22,6 +22,7 @@ Route::prefix('reports')->group(function(){
     Route::get('pending-po/download', [PendingPOController::class, 'download'])->name('pending-po.download');
 
     Route::get('ap-daily/download', [APDailyController::class, 'download'])->name('ap-daily.download');
+    Route::get('ap-daily/webview', [APDailyController::class, 'webview'])->name('ap-daily.webview');
     
 });
 

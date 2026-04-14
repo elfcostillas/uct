@@ -19,9 +19,7 @@ trait LogsActivity
                 auth()->user()
             );
 
-            if($model->getTable() === 'vehicles'){
-                VehicleWheelPosition::create(array('vehicle_id' => $model->getKey()));
-            }
+         
         });
 
         static::updated(function ($model) {
@@ -34,11 +32,7 @@ trait LogsActivity
                 // $model->getOriginal()
             );
 
-            if($model->getTable() === 'tire_positioning'){
-               
-                TireLoggerService::log($model,auth()->user());
-               
-            }
+        
         });
 
         static::deleted(function ($model) {

@@ -47,4 +47,17 @@ class APDailyController extends Controller
 
 
     }
+
+    public function webview()
+    {
+        $ap_report = $this->service->buildReport();
+        $monthly_ap_report = $this->service->buildMonthlyAP();
+        $monthly_ap_report_vendor = $this->service->buildMonthlyAPByVendor();
+
+        return view('reports.ap-daily-webview', [ 
+            'ap_report' => $ap_report,
+            'monthly_ap_report' => $monthly_ap_report,
+            'monthly_ap_report_vendor' => $monthly_ap_report_vendor,
+        ]);
+    }
 }

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\DataSource;
 
 use App\Http\Controllers\Controller;
+use App\Service\DataSource\PendingReportService;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
@@ -12,7 +13,7 @@ use Throwable;
 
 class ExcelUploaderController extends Controller
 {
-    public function __construct()
+    public function __construct(protected PendingReportService $service)
     {
         
     }
@@ -26,6 +27,9 @@ class ExcelUploaderController extends Controller
     public function upload(Request $request)
     {
         // dd($request->file('files'));
+
+        set_time_limit(0);
+        ini_set('memory_limit', '512M');
 
         if (!Storage::disk('public')->exists('uploads')) {
             Storage::disk('public')->makeDirectory('uploads');
@@ -48,53 +52,26 @@ class ExcelUploaderController extends Controller
             $header = fgetcsv($handle, 1000, ',');
             $data = array();
 
+            $ctr =0;
+
             while (($row = fgetcsv($handle, 0, ',')) !== false) {
+                $ctr++;
 
                 $row = array_map(fn($v) => mb_convert_encoding(trim($v), 'UTF-8', 'auto'), $row);
+              
+                $result =  $this->service->createORUpdate($row,$ctr);
 
-                // $format = 'Y-m-d\TH:i:s.u\Z'; 
-
-                // $clean = strstr(trim($row[19]), 'Z', true) . 'Z';
-
-                // $date = Carbon::createFromFormat($format, $clean);
-
-                array_push($data,[
-                    'title' => trim($row[0]),
-                    'created_date' => Carbon::createFromFormat('n/j/Y',trim($row[1]))->format('Y-m-d'),
-                    'po_no' => trim($row[2]),
-                    'po_line_no' => trim($row[3]),
-                    'po_status' => trim($row[4]),
-                    'vendor' => trim($row[5]),
-                    'invoice_link' => trim($row[6]),
-                    'vendor_email' => trim($row[7]),
-                    'ap_person' => trim($row[8]),
-                    'invoice_name' => trim($row[9]),
-                    'invoice_value' => trim($row[10]),
-                    'currency' => trim($row[11]),
-                    'buyer' => trim($row[12]),
-                    'record_issue' => trim($row[13]),
-                    'ba_group' => trim($row[14]),
-                    'buyer_admin' => trim($row[15]),
-                    'ba_record_status' => trim($row[16]),
-                    'ba_comments' => trim($row[17]),
-                    'buyer_comments' => trim($row[18]),
-                    'auto_update' => trim($row[19]),
-                    'item_type' => trim($row[20]),
-                    'path' => trim($row[21])
-                ]);
+                if(!$result){
+                    var_dump($row,$ctr);
+                }else{
+                    var_dump($row[0]);
+                }
+                    
+                unset($row);
             }
 
             fclose($handle);
-            try {
-                // DB::table('data_src')->insertOrIgnore($data);
-                $chunks = array_chunk($data, 500); // 500 rows per batch
-
-                foreach ($chunks as $chunk) {
-                    DB::table('data_src')->insertOrIgnore($chunk);
-                }
-            } catch (Throwable $e){
-                return response()->json($e->getMessage());
-            }
+           
         }
 
     }

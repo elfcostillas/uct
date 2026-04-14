@@ -40,6 +40,7 @@ import { FileUpload }  from 'primevue';
 import { Skeleton } from 'primevue';
 
 import { createPinia } from 'pinia';
+import {ProgressSpinner} from 'primevue';
 
 
 import ConfirmationService from 'primevue/confirmationservice';
@@ -80,6 +81,7 @@ createInertiaApp({
             .component('Image', Image)
             .component('FileUpload', FileUpload)
             .component('Skeleton', Skeleton)
+            .component('ProgressSpinner', ProgressSpinner)
 
             .use(ToastService)
             .use(ConfirmationService)

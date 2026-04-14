@@ -21,6 +21,15 @@
                         class="w-32 my-2" 
                         @click="download"
                     />
+
+                    <Button 
+                        icon="pi pi-globe" 
+                        aria-label="Web View" 
+                        severity="info"
+                        label="Web View" 
+                        class="w-32 my-2 ml-2" 
+                        @click="webview"
+                    />
                     <DataTable
                         :value="props.count_by_vendor"
                         :cols="cols"
@@ -80,6 +89,11 @@ import { router } from '@inertiajs/vue3';
 const download = () => {
     window.open('/api/reports/ap-daily/download');
 };
+
+const webview = () => {
+    window.open('/api/reports/ap-daily/webview');
+};
+
 
 const sumOfTotals = computed(()=> {
     return props.count_by_vendor.reduce( (sum,item) => {
