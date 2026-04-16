@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\DataSource;
 
 use App\Http\Controllers\Controller;
+use App\Jobs\ProcessPOCsv;
 use App\Service\DataSource\PendingReportService;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
@@ -27,8 +28,7 @@ class ExcelUploaderController extends Controller
     public function upload(Request $request)
     {
         // dd($request->file('files'));
-
-        set_time_limit(0);
+       
         ini_set('memory_limit', '512M');
 
         if (!Storage::disk('public')->exists('uploads')) {
@@ -43,7 +43,10 @@ class ExcelUploaderController extends Controller
         } catch (Throwable $e){
             dd($e->getMessage());
         }
-       
+
+        ProcessPOCsv::dispatch($path);
+
+        /*
         $filename = basename($path);
 
         $fullPath = storage_path('app/public/' . $path);
@@ -73,6 +76,7 @@ class ExcelUploaderController extends Controller
             fclose($handle);
            
         }
+        */
 
     }
 

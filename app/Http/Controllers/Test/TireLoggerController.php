@@ -88,6 +88,56 @@ class TireLoggerController extends Controller
 
         $vehicle->save();
     }
+
+
+    public function test()
+    {
+        preg_match_all(
+                '/\b(\d{1,2}[\/\-]\d{1,2}[\/\-]\d{2,4}|\d{1,2}[\/\-]\d{1,2})\b/',
+                "3/09 
+                INVOICE ISSUE:
+        PPV_PO PRICE 1.32 / INV. PRICE 2.67
+
+        ACTION TO BE TAKEN:
+        CONTACT BUYER TO CONFIRM PRICE",
+                $matches
+            );
+            // $date = Carbon::createFromDate('n/j/Y',$matches[0][0]) || Carbon::createFromDate('n/j',$matches[0][0]);
+
+        $format = $this->detectDateFormat($matches[0][0]);
+
+        dd($format);
+        
+
+    }
+
+    function detectDateFormat($date)
+    {
+        $parts = preg_split('/[\/\-]/', $date);
+
+        if (count($parts) === 2) {
+            return 'm/d';
+        }
+
+        if (count($parts) === 3) {
+            $first = (int) $parts[0];
+            $second = (int) $parts[1];
+            $third = (int) $parts[2];
+
+            // year is usually 4 digits or > 31
+            if ($third > 31) {
+                return 'm/d/Y or d/m/Y';
+            }
+
+            if ($parts[0] > 12) {
+                return 'd/m/Y';
+            }
+
+            return 'm/d/Y';
+        }
+
+        return 'unknown';
+    }
 }
 
 // update tire_positioning set front_left_wheel_id = null,front_right_wheel_id = null,rear_right_outer_wheel_id = null,odometer_reading = null,hour_meter_reading = null;

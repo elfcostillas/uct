@@ -2,8 +2,12 @@
 
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DataSource\ExcelUploaderController;
+use App\Http\Controllers\DataSource\InvoiceController;
+use App\Http\Controllers\DataSource\InvoiceExcelUploaderController;
 use App\Http\Controllers\Reports\APDailyController;
 use App\Http\Controllers\Reports\PendingPOController;
+use App\Http\Controllers\Test\TireLoggerController;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Foundation\Application;
 use Inertia\Inertia;
@@ -34,13 +38,44 @@ Route::get('/', function () {
 Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard')->middleware(['auth', 'web']);
 
 Route::prefix('data-source')->group(function(){
+    Route::get('invoices', [InvoiceController::class, 'index'])->name('invoices.index');
+    
     Route::get('excel-uploader', [ExcelUploaderController::class, 'index'])->name('excel-upload.index');
+    Route::get('excel-uploader-invoice', [InvoiceExcelUploaderController::class, 'index'])->name('excel-upload-invoice.index');
 });
 
 Route::prefix('reports')->group(function(){
     Route::get('pending-po', [PendingPOController::class, 'index'])->name('pending-po.index');
     Route::get('ap-daily', [APDailyController::class, 'index'])->name('ap-daily.index');
 });
+
+
+Route::get('test',[TireLoggerController::class,'test'] );
+    
+//    preg_match_all(
+//         '/\b(\d{1,2}[\/\-]\d{1,2}[\/\-]\d{2,4}|\d{1,2}[\/\-]\d{1,2})\b/',
+//         "3/09 
+//         INVOICE ISSUE:
+// PPV_PO PRICE 1.32 / INV. PRICE 2.67
+
+// ACTION TO BE TAKEN:
+// CONTACT BUYER TO CONFIRM PRICE",
+//         $matches
+//     );
+//     // $date = Carbon::createFromDate('n/j/Y',$matches[0][0]) || Carbon::createFromDate('n/j',$matches[0][0]);
+
+//     if (Carbon::hasFormat($matches[0][0], 'n/j')) {
+//         $date =  Carbon::createFromDate('n/j',$matches[0][0]);
+//     }
+
+//     if (Carbon::hasFormat($matches[0][0], 'n/j/Y')) {
+//         $date =  Carbon::createFromDate('n/j/Y',$matches[0][0]);
+//     }
+
+//     dd($date);
+//     dd($matches[0][0]);
+
+// });
 
 // Route::get('/hash', function(){
 //     echo Hash::make('admin');

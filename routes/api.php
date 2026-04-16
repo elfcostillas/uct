@@ -6,6 +6,8 @@
 // use App\Http\Controllers\TireManagement\InstallationController;
 
 use App\Http\Controllers\DataSource\ExcelUploaderController;
+use App\Http\Controllers\DataSource\InvoiceController;
+use App\Http\Controllers\DataSource\InvoiceExcelUploaderController;
 use App\Http\Controllers\Reports\APDailyController;
 use App\Http\Controllers\Reports\PendingPOController;
 use Illuminate\Http\Request;
@@ -14,6 +16,7 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('auth:sanctum')->prefix('data-source')->group(function(){
     Route::prefix('excel-uploader')->group(function(){
         Route::post('upload', [ExcelUploaderController::class, 'upload'])->name('excel-upload.upload');
+        Route::post('invoice-upload', [InvoiceExcelUploaderController::class, 'upload'])->name('excel-upload.invoice-upload');
       
     });
 });
@@ -25,6 +28,17 @@ Route::prefix('reports')->group(function(){
     Route::get('ap-daily/webview', [APDailyController::class, 'webview'])->name('ap-daily.webview');
     
 });
+
+Route::prefix('data-source')->group(function(){
+
+    Route::prefix('invoices')->group(function(){
+        Route::get('print/{invoice_no}', [InvoiceController::class, 'print'])->name('invoices.print');
+    });
+        
+
+ });
+
+
 
 // Route::get('/user', function (Request $request) {
 //     return $request->user();

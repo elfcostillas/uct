@@ -45,6 +45,15 @@
                                 
                                 @click="$emit('edit', data)"
                             />
+
+                            <Button
+                                v-if="col.buttons?.includes('print')"
+                                severity="danger" raised
+                                icon="pi pi-file-pdf"
+                                label="Print"
+                                
+                                @click="$emit('print', data)"
+                            />
                         </span>
                         <span v-else-if="col.type === 'date'">
                             {{ format(new Date(data[col.field]), 'MM/dd/yyyy') }}

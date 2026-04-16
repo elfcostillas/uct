@@ -5,6 +5,7 @@ namespace App\Service\DataSource;
 use App\Models\UCT\PendingPo;
 use Throwable;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 
 class PendingReportService
 {
@@ -25,6 +26,53 @@ class PendingReportService
                
             }
 
+            if(trim($row[17])!="")
+            {
+                preg_match_all(
+                    '/\b(\d{1,2}[\/\-]\d{1,2}[\/\-]\d{2,4}|\d{1,2}[\/\-]\d{1,2})\b/',
+                    $row[17],
+                    $matches
+                );
+
+                if (!empty($matches[0][0])) {
+
+                    $format = $this->detectDateFormat($matches[0][0]);
+
+                    switch($format)
+                    {
+                        case 'm/d';
+                        // $date_reviewed_ba = $format.' - '. $matches[0][0];
+                                $date_reviewed_ba = Carbon::parse($matches[0][0].'/'.$created_date->format('Y'))->format('Y-m-d');
+                            break;
+
+                        case 'm/d/Y';
+                        case 'm/d/Y or d/m/Y';
+                        // $date_reviewed_ba = $format.' - '. $matches[0][0];
+                                $date_reviewed_ba = Carbon::createFromFormat('n/j/Y',$matches[0][0])->format('Y-m-d');
+                            break;
+                        
+                        default :
+                            $date_reviewed_ba = null;
+                            break;
+                        
+                    }
+                }else{
+                    $date_reviewed_ba = null;
+                }
+
+              
+            }else{
+                $date_reviewed_ba = null;
+            }
+
+            DB::table('looper')->insert([
+                'title' => 1,
+                'time_stamp' => now(),
+                'event_type' => 'I',
+                'text_comment' => $date_reviewed_ba
+            ]);
+
+            // $date_reviewed_ba = ($matches[0][0] != "") ?  Carbon::createFromFormat($matches[0],'n/j/Y')->format('Y-m-d') : null;
 
             $po_row = [
                     'title' => trim($row[0]),
@@ -37,7 +85,7 @@ class PendingReportService
                     'vendor_email' => trim($row[7]),
                     'ap_person' => trim($row[8]),
                     'invoice_name' => trim($row[9]),
-                    'invoice_value' => trim($row[10]),
+                    'invoice_value' => (trim($row[10])=="") ? 0 : trim($row[10]),
                     'currency' => trim($row[11]),
                     'buyer' => trim($row[12]),
                     'record_issue' => trim($row[13]),
@@ -53,7 +101,8 @@ class PendingReportService
                     'auto_update' => trim($row[21]),
                     'item_type' => trim($row[22]),
                     'path' => trim($row[23]),
-                    'created_year' => $created_date->format('Y')
+                    'created_year' => $created_date->format('Y'),
+                    'date_reviewed_ba' => $date_reviewed_ba
 
                 ];
 
@@ -64,13 +113,21 @@ class PendingReportService
             $found = PendingPo::where(['title' => $po_row['title']])->first();
 
             if ($found) {
-                // dd("Its a scam");
-                // return false;
-                $found->update($po_row);
-                return false;
+              
+                foreach($po_row as $key => $value)
+                {
+                    if($found->$key == $value)
+                    {
+                        unset($po_row[$key]);
+                    }
+                }
+
+                if(!empty($po_row)){
+                    $found->update($po_row);
+                }
             }
             else{
-                
+              
                 PendingPo::create($po_row);
 
             }
@@ -83,6 +140,34 @@ class PendingReportService
         }
         
         return true;
+    }
+
+    function detectDateFormat($date)
+    {
+        $parts = preg_split('/[\/\-]/', $date);
+
+        if (count($parts) === 2) {
+            return 'm/d';
+        }
+
+        if (count($parts) === 3) {
+            $first = (int) $parts[0];
+            $second = (int) $parts[1];
+            $third = (int) $parts[2];
+
+            // year is usually 4 digits or > 31
+            if ($third > 31) {
+                return 'm/d/Y or d/m/Y';
+            }
+
+            if ($parts[0] > 12) {
+                return 'd/m/Y';
+            }
+
+            return 'm/d/Y';
+        }
+
+        return 'unknown';
     }
 }
 
