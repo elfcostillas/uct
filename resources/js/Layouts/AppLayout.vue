@@ -42,5 +42,12 @@ body {
     background-color: #e7e4c9;
     font-size: 10pt;
 }
+.p-menu {
+    z-index: 1000 !important;
+}
+
+.p-menubar-submenu{
+    z-index: 9999999999 !important;
+}
 
 </style>

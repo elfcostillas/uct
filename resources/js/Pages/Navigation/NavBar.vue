@@ -1,6 +1,6 @@
 <template>
     <div>
-        <Menubar :model="items">
+        <Menubar :model="items" >
             <template #end>
                 |
                 <template v-if="user">
@@ -12,7 +12,7 @@
                         severity="contrast"
                         @click="toggle"
                     />
-                    <Menu ref="menu" :model="userMenu" popup />
+                    <Menu ref="menu" :model="userMenu" popup appendTo="body"  />
                 </template>
                 <template v-else>
                     

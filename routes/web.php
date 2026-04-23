@@ -4,7 +4,10 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DataSource\ExcelUploaderController;
 use App\Http\Controllers\DataSource\InvoiceController;
 use App\Http\Controllers\DataSource\InvoiceExcelUploaderController;
+use App\Http\Controllers\Reports\DeletedRowsController;
 use App\Http\Controllers\Reports\APDailyController;
+use App\Http\Controllers\Reports\DailyBreakdownController;
+use App\Http\Controllers\Reports\DailyChangesController;
 use App\Http\Controllers\Reports\PendingPOController;
 use App\Http\Controllers\Test\TireLoggerController;
 use Carbon\Carbon;
@@ -44,9 +47,17 @@ Route::prefix('data-source')->group(function(){
     Route::get('excel-uploader-invoice', [InvoiceExcelUploaderController::class, 'index'])->name('excel-upload-invoice.index');
 });
 
+
+
 Route::prefix('reports')->group(function(){
     Route::get('pending-po', [PendingPOController::class, 'index'])->name('pending-po.index');
     Route::get('ap-daily', [APDailyController::class, 'index'])->name('ap-daily.index');
+
+    Route::get('deleted-rows', [DeletedRowsController::class, 'index'])->name('deleted-rows.index');
+    Route::get('daily-changes', [DailyChangesController::class, 'index'])->name('daily-changes.index');
+
+    Route::get('daily-breakdown', [DailyBreakdownController::class, 'index'])->name('daily-breakdown.index');
+    
 });
 
 

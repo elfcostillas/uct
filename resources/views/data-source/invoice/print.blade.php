@@ -65,7 +65,7 @@
             <td></td>
             <td></td>
             <td class="b r" style="width:112px">INVOICE # :</td>
-            <td class="l" style="width:112px;padding-left:24px"> {{ $header['invoice_no'] }}</td>
+            <td class="l" style="width:112px;padding-left:14px"> {{ $header['invoice_no'] }}</td>
         </tr>
         <tr>
             <td class="" >BILL TO: </td>
@@ -76,7 +76,7 @@
             <td class="l" style="width:112px;padding-left:14px"> {{ $header['date'] }}</td>
         </tr>
         <tr>
-            <td colspan="3" style="padding-left: 24px " class="b">Ultra Clean Technology Systems and</td>
+            <td colspan="3" style="padding-left: 24px;" class="b">Ultra Clean Technology Systems and</td>
           
             <td></td>
             <td class="b r" style="width:112px">DUE DATE :</td>

@@ -31,6 +31,8 @@ class ExcelUploaderController extends Controller
        
         ini_set('memory_limit', '512M');
 
+        $upload_date = Carbon::createFromFormat('m-d-Y',$request->upload_date);
+
         if (!Storage::disk('public')->exists('uploads')) {
             Storage::disk('public')->makeDirectory('uploads');
         }
@@ -44,7 +46,7 @@ class ExcelUploaderController extends Controller
             dd($e->getMessage());
         }
 
-        ProcessPOCsv::dispatch($path);
+        ProcessPOCsv::dispatch($path,$upload_date);
 
         /*
         $filename = basename($path);

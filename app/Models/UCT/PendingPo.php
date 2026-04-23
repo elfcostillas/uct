@@ -39,7 +39,8 @@ class PendingPo extends Model
         'auto_update',
         'item_type',
         'path',
-        'created_year'
+        'created_year',
+        'ppv_var'
     ];
 
     public $timestamps = false;

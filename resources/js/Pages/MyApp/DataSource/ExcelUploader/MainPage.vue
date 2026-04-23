@@ -6,28 +6,44 @@
             </template>
 
             <template #main>
-                <FileUpload  
-                    name="file"
-                    ref="fileupload" 
-                   
-                    accept=".csv"
-                    chooseLabel="Browse"
-                    :customUpload="true"
-                    :maxFileSize="100000000"
-                    @uploader="onUpload"
-                    :loading="loading"
-                    @upload="onSuccess"
-                    @error="onError"   
-                >
-                    <template #content="{ files }">
-                        <div v-for="file in files" :key="file.name">
-                            <span>{{ file.name }}</span>
+                <div style=" margin : 0 auto; width: 28rem">   
+                    <div class="flex">
+                        <div class=" mb-2"> 
+                            <label for="">Date</label>
+                            <DatePicker 
+                                v-model="uploadDate"
+                                dateFormat="mm/dd/yy"
+                                showIcon 
+                                fluid
+                                class="w-full"
+                            />
                         </div>
-                    </template>
-                </FileUpload>
-                <div v-if="loading" class="overlay">
-                    <ProgressSpinner />
-                </div>
+                    </div>
+
+                    <FileUpload  
+                        name="file"
+                        ref="fileupload" 
+                    
+                        accept=".csv"
+                        chooseLabel="Browse"
+                        :customUpload="true"
+                        :maxFileSize="100000000"
+                        @uploader="onUpload"
+                        :loading="loading"
+                        @upload="onSuccess"
+                        @error="onError"   
+                    >
+                        <template #content="{ files }">
+                            <div v-for="file in files" :key="file.name">
+                                <span>{{ file.name }}</span>
+                            </div>
+                        </template>
+                    </FileUpload>
+                    <div v-if="loading" class="overlay">
+                        <ProgressSpinner />
+                    </div>
+                </div>    
+                
             </template>
        </AppLayout>
     </div> 
@@ -35,10 +51,11 @@
 
 <script setup>
 
-import AppLayout from '@/Layouts/AppLayout.vue';
+import AppLayout from '@/Layouts/AppLayoutNoSide.vue';
 import NavBar from '@/Pages/Navigation/NavBar.vue';
 import { postFN } from '@/api/transmit.js';
 import { ref } from 'vue';
+import { format } from 'date-fns';
 //  url='/api/data-source/excel-uploader/upload'
 
 // const objectURL = URL.createObjectURL(file);
@@ -51,16 +68,19 @@ const loading=ref(false);
 
 const fileupload = ref(null);
 
+const uploadDate = ref();
 
 const onUpload = async (event) => {
     loading.value=true;
 
     const formData = new FormData()
 
+    formData.append('upload_date', format(new Date(uploadDate.value),'MM-dd-yyyy'));
 
     event.files.forEach((file) => {
         formData.append('files', file)
     });
+
 
     const response = await axios.post('/api/data-source/excel-uploader/upload', formData);
 

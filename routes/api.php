@@ -9,6 +9,8 @@ use App\Http\Controllers\DataSource\ExcelUploaderController;
 use App\Http\Controllers\DataSource\InvoiceController;
 use App\Http\Controllers\DataSource\InvoiceExcelUploaderController;
 use App\Http\Controllers\Reports\APDailyController;
+use App\Http\Controllers\Reports\DailyBreakdownController;
+use App\Http\Controllers\Reports\DailyChangesController;
 use App\Http\Controllers\Reports\PendingPOController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -26,6 +28,9 @@ Route::prefix('reports')->group(function(){
 
     Route::get('ap-daily/download', [APDailyController::class, 'download'])->name('ap-daily.download');
     Route::get('ap-daily/webview', [APDailyController::class, 'webview'])->name('ap-daily.webview');
+
+    Route::get('daily-changes/download/{year}', [DailyChangesController::class, 'download'])->name('daily-changes.download');
+    Route::get('daily-breakdown/download/{year}', [DailyBreakdownController::class, 'download'])->name('daily-breakdown.download');
     
 });
 
