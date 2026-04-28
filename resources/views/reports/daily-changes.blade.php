@@ -34,6 +34,8 @@ Collection
         table tr td {
             padding: 2px;
         }
+
+        
     </style>
 </head>
 <body>
@@ -42,6 +44,10 @@ Collection
             <td>Vendor</td>
             @foreach($data['dates'] as $date)
                 <td colspan="2" > {{ $date->upload_date }}</td>
+                <?php
+                    $totals['pending'][$date->upload_date] = 0;
+                    $totals['processed'][$date->upload_date] = 0;
+                ?>
             @endforeach
         </tr>
         @foreach($data['vendors'] as $vendor)
@@ -50,9 +56,23 @@ Collection
                 @foreach($data['dates'] as $iDate)
                     <td style="text-align:center;width: 80px;background-color: orange;"> {{ $data['pending'][$vendor->vendor][$iDate->upload_date] }} </td>
                     <td style="text-align:center;width: 80px;background-color: #03AC13;"> {{ $data['processed'][$vendor->vendor][$iDate->upload_date] }} </td>
+
+                    <?php
+                        $totals['pending'][$iDate->upload_date] += $data['pending'][$vendor->vendor][$iDate->upload_date];
+                        $totals['processed'][$iDate->upload_date] += $data['processed'][$vendor->vendor][$iDate->upload_date];
+                    ?>
                 @endforeach
             </tr>
+         
         @endforeach
+        <tr>
+            <td > TOTALS </td>
+        @foreach($data['dates'] as $tdate)
+            <td style="text-align:center;width: 80px;background-color: orange;"> {{ $totals['pending'][$tdate->upload_date] }}</td>
+            <td style="text-align:center;width: 80px;background-color: #03AC13;"> {{ $totals['processed'][$tdate->upload_date] }}</td>
+         
+        @endforeach
+        </tr>
     </table>
 </body>
 </html>

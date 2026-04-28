@@ -31,35 +31,43 @@ class ProcessPOCsv implements ShouldQueue
         $fullPath = storage_path('app/public/' . $this->path);
         // $fullPath = storage_path($this->path);
 
-        if (($handle = fopen($fullPath, 'r')) !== false) {
-            $header = fgetcsv($handle, 1000, ',');
-            $data = array();
+        // count SELECT COUNT(title) FROM data_src_history WHERE upload_date = '2026-04-17'
 
-            $ctr = 0;
+        $count = DB::table('data_src_history')->where('upload_date',$this->upload_date);
 
-            DB::transaction(function() use ($handle){
+        if($count->count() == 0){
+            if (($handle = fopen($fullPath, 'r')) !== false) {
+                $header = fgetcsv($handle, 1000, ',');
+                $data = array();
 
-                // copy to before table;
-                app(PendingReportService::class)->copyToOtherTable($this->upload_date,'data_src_before');
+                $ctr = 0;
 
-                while (($row = fgetcsv($handle, 0, ',')) !== false) {
-                   
-                    if(count($row)==25)
-                    {
-                        $row = array_map(fn($v) => mb_convert_encoding(trim($v), 'UTF-8', 'auto'), $row);
+                DB::transaction(function() use ($handle){
+
+                    // copy to before table;
+                    app(PendingReportService::class)->copyToOtherTable($this->upload_date,'data_src_before');
+
+                    while (($row = fgetcsv($handle, 0, ',')) !== false) {
                     
-                        $result =  app(PendingReportService::class)->createORUpdate($row,$this->upload_date);
-                            
-                        unset($row);
+                        if(count($row)==25)
+                        {
+                            $row = array_map(fn($v) => mb_convert_encoding(trim($v), 'UTF-8', 'auto'), $row);
+                        
+                            $result =  app(PendingReportService::class)->createORUpdate($row,$this->upload_date);
+                                
+                            unset($row);
+                        }
                     }
-                }
 
-                fclose($handle);
+                    fclose($handle);
 
-                // copy to after;
-                app(PendingReportService::class)->copyToOtherTable($this->upload_date,'data_src_after');
-            });
-           
+                    // copy to after;
+                    app(PendingReportService::class)->copyToOtherTable($this->upload_date,'data_src_after');
+                });
+            
+            }
         }
+
+        
     }
 }

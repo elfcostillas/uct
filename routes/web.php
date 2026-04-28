@@ -9,6 +9,7 @@ use App\Http\Controllers\Reports\APDailyController;
 use App\Http\Controllers\Reports\DailyBreakdownController;
 use App\Http\Controllers\Reports\DailyChangesController;
 use App\Http\Controllers\Reports\PendingPOController;
+use App\Http\Controllers\Test\ScriptTesterController;
 use App\Http\Controllers\Test\TireLoggerController;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Route;
@@ -61,7 +62,7 @@ Route::prefix('reports')->group(function(){
 });
 
 
-Route::get('test',[TireLoggerController::class,'test'] );
+Route::get('test',[ScriptTesterController::class,'test'] );
     
 //    preg_match_all(
 //         '/\b(\d{1,2}[\/\-]\d{1,2}[\/\-]\d{2,4}|\d{1,2}[\/\-]\d{1,2})\b/',

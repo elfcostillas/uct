@@ -33,7 +33,7 @@ class BIReportsService
         }
     }
 
-    public function buildDailyChanges($year = null)
+    public function buildDailyChanges($year = null,$bi_year = null)
     {
         $dates = $this->biRepository->getDatesBeforeUpload($year);
 
@@ -55,7 +55,7 @@ class BIReportsService
 
         foreach($dates as $date)
         {
-            $data = $this->biRepository->getDailyChanges($date->upload_date);
+            $data = $this->biRepository->getDailyChanges($date->upload_date,$bi_year);
 
            
             foreach($data as $row) 

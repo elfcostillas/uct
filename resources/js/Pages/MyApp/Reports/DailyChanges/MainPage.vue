@@ -10,14 +10,25 @@
                 </h2>
             </template>
             <template #main>
-                <div style=" margin : 0 auto; width: 28rem">   
+                <div style=" margin : 0 auto; width: 32rem">   
                     <Card>   
                         <template #content>
                             <div class="flex gap-3">
                                 <div class="w-4 mb-2" style=""> 
-                                    <label for="" style="color:#5a5a5a"> Year</label>
+                                    <label for="" style="color:#5a5a5a"> Year (CSV Uploaded)</label>
                                     <Select 
                                         v-model="selectedYear"
+                                        :options="props.years"
+                                        optionLabel="fy_year"
+                                        optionValue="fy_year"
+                                       
+                                        class="w-full"
+                                    />
+                                </div>
+                                <div class="w-4 mb-2" style=""> 
+                                    <label for="" style="color:#5a5a5a"> Year (BI Create Date)</label>
+                                    <Select 
+                                        v-model="selectedBIYear"
                                         :options="props.years"
                                         optionLabel="fy_year"
                                         optionValue="fy_year"
@@ -54,13 +65,14 @@ import { router } from '@inertiajs/vue3';
 
 const selectedYear = ref();
 const selectedDate = ref();
+const selectedBIYear = ref();
 
 // const download = () => {
 //     window.open('');
 // }
 
 const download = () => {
-    window.open(`/api/reports/daily-changes/download/${selectedYear.value}`);
+    window.open(`/api/reports/daily-changes/download/${selectedYear.value}/${selectedBIYear.value}`);
 };
 
 const loading = ref(false);

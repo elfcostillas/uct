@@ -29,7 +29,7 @@ Route::prefix('reports')->group(function(){
     Route::get('ap-daily/download', [APDailyController::class, 'download'])->name('ap-daily.download');
     Route::get('ap-daily/webview', [APDailyController::class, 'webview'])->name('ap-daily.webview');
 
-    Route::get('daily-changes/download/{year}', [DailyChangesController::class, 'download'])->name('daily-changes.download');
+    Route::get('daily-changes/download/{year}/{bi_year}', [DailyChangesController::class, 'download'])->name('daily-changes.download');
     Route::get('daily-breakdown/download/{year}', [DailyBreakdownController::class, 'download'])->name('daily-breakdown.download');
     
 });

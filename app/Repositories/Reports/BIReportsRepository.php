@@ -79,7 +79,7 @@ class BIReportsRepository
 
     }
 
-    public function getDailyChanges($date)
+    public function getDailyChanges($date,$bi_year)
     {
 
 
@@ -88,6 +88,7 @@ class BIReportsRepository
             ->selectRaw("COALESCE(NULLIF(a.vendor, ''),'Blanks') as vendor, COUNT(a.title) as pending,0 as ref_count")
             ->where('a.po_status', '2 - Pending')
             ->where('a.upload_date', $date)
+            ->whereRaw('YEAR(a.created_date) = ?',[$bi_year])
             ->whereNotIn('a.title', function ($query) use ($date) {
                 $query->select('title')
                     ->from('data_src_before')
@@ -102,6 +103,7 @@ class BIReportsRepository
                 $join->on('data_after.title', '=', 'data_before.title')
                     ->where('data_before.upload_date', $date);
             })
+            ->whereRaw('YEAR(data_after.created_date) = ?',[$bi_year])
             ->where('data_after.upload_date', $date)
             ->where('data_after.po_status', '3 - Processed')
             ->whereColumn('data_after.po_status', '!=', 'data_before.po_status')
